@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import logo from '../../../assets/icons/logo.svg'
+import auth from '../../Firebase/Firebase.config';
+import { AuthContext } from '../../Auntication/Authentication';
 
 
 const Navber = () => {
+
+    const { user, logout } = useContext(AuthContext)
+
+
+    const handlelogout = () => {
+        logout(auth)
+            .then()
+            .catch(error => console.log(error))
+
+    }
 
 
     const navItems = <>
@@ -26,15 +38,45 @@ const Navber = () => {
         </NavLink>
 
 
-        <NavLink
-            to="/login"
-            className={({ isActive, isPending }) =>
-                isPending ? "pending" : isActive ? "text-red-700 text-xl font-bold " : ""
-            }
-        >
-            Login
-        </NavLink>
-       
+
+        {
+            user?.email ?
+                <>
+                <NavLink
+                        to="/bookings"
+                        className={({ isActive, isPending }) =>
+                            isPending ? "pending" : isActive ? "text-red-700 text-xl font-bold " : ""
+                        }
+                    >
+                        Bookings
+                    </NavLink>
+                    
+                    <NavLink
+                        to="/login"
+                        className={({ isActive, isPending }) =>
+                            isPending ? "pending" : isActive ? "text-red-700 text-xl font-bold " : ""
+                        }
+                    >
+                        <button onClick={handlelogout}>Log out</button>
+                    </NavLink>
+
+                    
+
+
+                </>
+                :
+                <NavLink
+                    to="/login"
+                    className={({ isActive, isPending }) =>
+                        isPending ? "pending" : isActive ? "text-red-700 text-xl font-bold " : ""
+                    }
+                >
+                    Login
+                </NavLink>
+        }
+
+
+
     </>
     return (
         <div className="navbar bg-base-100 h-12 mb-4">
@@ -58,7 +100,13 @@ const Navber = () => {
                 </ul>
             </div>
 
+
+
+
             <div className="navbar-end">
+                <div>
+
+                </div>
                 <button className="btn btn-outline btn-">Appointment</button>
             </div>
         </div>

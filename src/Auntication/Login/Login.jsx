@@ -1,18 +1,83 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../Authentication';
+import { Result } from 'postcss';
+import axios from 'axios';
+// import { AuthContext } from '../Auntication';
 
 const Login = () => {
+
+    const {signIn,user,googleLogin}=useContext(AuthContext)
+    const location =useLocation()
+    const navigate=useNavigate()
+
+    const handlelogin=event=>{
+
+
+        event.preventDefault();
+    
+        const email=event.target.email.value;
+        const password=event.target.password.value
+        console.log(email,password);
+    
+    
+        signIn(email,password)
+        .then(result =>{
+            const loggedinuser=result.user;
+            console.log(loggedinuser);
+            const user={email}
+
+            // navigate(location?.state ? location?.state :'/')
+
+                 //get acceess token
+
+                 axios.post('http://localhost:5000/jwt',user)
+                 .then(res=>{
+                    console.log(res.data);
+                 })
+                    
+
+
+
+
+        })
+      
+    }
+
+    const handlegoogle=()=>{
+
+        googleLogin()
+       .then(res=>{
+        console.log(res);
+
+        
+
+
+   
+
+        
+
+       })
+
+
+       .catch(error=>{
+        console.log(error);
+       })
+  
+    };
+
+
     return (
         <div>
              <div className=''>
-            <div className="hero min-h-screen bg-black">
+            <div className="hero min-h-screen ">
                 <div className="hero-content flex-col lg:flex-row-reverse">
 
 
                     <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-[#171717] ">
                         <div className="card-body">
                             {/* <form onSubmit={handlelogin} > */}
-                            <form >
+                            <form onSubmit={handlelogin}>
                                 <div className="form-control">
                                     <h1 className='text-3xl font-bold mb-5 text-red-700'>Login your account</h1>
                                     <label className="label">
@@ -33,11 +98,11 @@ const Login = () => {
                                     <button className="btn btn-primary">Login</button>
                                 </div>
                             </form>
-                            <p className='text-white'>New here? please <Link to="/register">
+                            <p className='text-white'>New here? please <Link to="/registation">
                                 <button className='btn btn-link text-red-700'>Register</button>
 
                             </Link> </p>
-                            <button  className='btn text-black  hover:bg-red-700 hover:text-white '>
+                            <button onClick={handlegoogle}  className='btn text-black  hover:bg-red-700 hover:text-white '>
                                 Google 
                             </button>
                         </div>
